@@ -1,8 +1,8 @@
 import streamlit as st
 import yfinance as yf
-import pandas as pd
 
-# Wite on the App in markdown stile
+
+# Write on the App in markdown stile
 st.write("""
 # Stock Price App
 
