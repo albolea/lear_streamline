@@ -49,3 +49,26 @@ st.write('Data Dimension: ' + str(df_selected_players.shape[0]) + ' rows and ' +
          str(df_selected_players.shape[1]) + ' columns.')
 st.dataframe(df_selected_players)
 
+# Download Data
+# https://discuss.streamlit.io/t/how-to-download-file-in-streamlit/1806
+def filedownload(df):
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode() # strings <-> bytes conversions
+    href = f'<a href="data:file/csv;base64,{b64}" download="playerStats.csv">Download CSV File</a>'
+    return href
+
+
+st.markdown(filedownload(df_selected_players), unsafe_allow_html=True)
+
+# Heatmap
+if st.button('Intercorrelation Heatmap'):
+    st.header('Intercorrelation Matrix Heatmap')
+    aux = df_selected_players.drop(['Player', 'Pos', 'Tm'], axis=1)
+    aux = aux.astype(float)
+    corr = aux.corr()
+    mask = np.zeros_like(corr)
+    mask[np.triu_indices_from(mask)] = True
+    with sns.axes_style("white"):
+        f, ax = plt.subplots(figsize=(7, 5))
+        ax = sns.heatmap(corr, mask=mask, vmax=1, square=True)
+    st.pyplot(f)
